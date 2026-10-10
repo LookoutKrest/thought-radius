@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thought Radius</title>
+<meta name="description" content="How big can one mind be? A mind can only be as wide as the distance a signal travels during one of its thoughts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f4f3ee;
+  --surface: #fcfcfb;
+  --line: #d9d7cf;
+  --text: #111110;
+  --text-2: #45443f;
+  --muted: #6a6963;
+  --accent: #1c5cab;
+  --accent-ink: #ffffff;
+  --pin: #c2410c;
+  --z1: #86b6ef; --z2: #3987e5; --z3: #1c5cab; --z4: #0d366b;
+  --chip-bg: #ecebe5;
+  --chip-on: #1c5cab;
+  --chip-on-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #121211;
+    --surface: #1a1a19;
+    --line: #34332f;
+    --text: #f0efec;
+    --text-2: #c3c2b7;
+    --muted: #a3a29a;
+    --accent: #6da7ec;
+    --accent-ink: #0b0b0b;
+    --pin: #fb923c;
+    --z1: #184f95; --z2: #2a78d6; --z3: #6da7ec; --z4: #b7d3f6;
+    --chip-bg: #262624;
+    --chip-on: #6da7ec;
+    --chip-on-ink: #0b0b0b;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #121211; --surface: #1a1a19; --line: #34332f;
+  --text: #f0efec; --text-2: #c3c2b7; --muted: #a3a29a;
+  --accent: #6da7ec; --accent-ink: #0b0b0b; --pin: #fb923c;
+  --z1: #184f95; --z2: #2a78d6; --z3: #6da7ec; --z4: #b7d3f6;
+  --chip-bg: #262624; --chip-on: #6da7ec; --chip-on-ink: #0b0b0b;
+}
+
+* { box-sizing: border-box; }
+html { font-size: 20px; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font-family: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  line-height: 1.35;
+}
+.wrap { max-width: 1180px; margin: 0 auto; padding: 18px 16px 28px; }
+
+header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 18px; margin-bottom: 12px; }
+h1 { font-size: 2rem; margin: 0; letter-spacing: -0.01em; }
+.tagline { margin: 0; color: var(--text-2); font-weight: 700; font-size: 0.95rem; }
+
+.small { font-size: 0.85rem; font-weight: 700; color: var(--text-2); }
+
+.presets { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px; }
+.presets .lbl { font-weight: 700; margin-right: 2px; }
+
+button.chip {
+  font: inherit; font-size: 0.85rem; font-weight: 700;
+  border: 2px solid transparent; border-radius: 999px;
+  background: var(--chip-bg); color: var(--text);
+  padding: 6px 13px; cursor: pointer; min-height: 40px;
+}
+button.chip:hover { border-color: var(--accent); }
+button.chip[aria-pressed="true"] { background: var(--chip-on); color: var(--chip-on-ink); }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--pin); outline-offset: 2px; }
+
+.grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+@media (max-width: 860px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; min-width: 0; }
+
+.control + .control { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+.control h2 { font-size: 1rem; margin: 0 0 2px; }
+.readout { font-size: 1.45rem; font-weight: 700; color: var(--accent); margin: 2px 0 6px; }
+.readout .sub { font-size: 0.85rem; color: var(--text-2); }
+input[type=range] { width: 100%; accent-color: var(--accent); height: 34px; margin: 0; }
+.quick { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.quick button.chip { font-size: 0.8rem; padding: 4px 11px; min-height: 36px; }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.speedbtns { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+
+.verdict-label { font-size: 0.85rem; font-weight: 700; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em; margin: 0; }
+.verdict { font-size: 2.6rem; font-weight: 700; margin: 0 0 4px; line-height: 1.05; display: flex; align-items: center; gap: 12px; }
+.swatch { width: 26px; height: 26px; border-radius: 6px; flex: none; border: 2px solid var(--line); }
+.verdict-text { font-size: 1.05rem; margin: 0 0 12px; }
+.stats { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px 16px; margin: 0; }
+.stats div { min-width: 0; }
+.stats dt { font-size: 0.85rem; font-weight: 700; color: var(--text-2); }
+.stats dd { margin: 0; font-size: 1.15rem; font-weight: 700; overflow-wrap: anywhere; }
+@media (max-width: 480px) { .stats { grid-template-columns: minmax(0, 1fr); } .verdict { font-size: 2.1rem; } }
+.scenario { margin: 12px 0 0; padding: 10px 12px; border-left: 4px solid var(--pin); background: var(--chip-bg); border-radius: 0 8px 8px 0; font-size: 0.95rem; }
+.scenario:empty { display: none; }
+
+.rightcol { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.ruler-card { margin-top: 0; }
+.ruler-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; align-items: baseline; }
+.ruler-head h2 { font-size: 1rem; margin: 0; }
+#ruler { width: 100%; display: block; margin-top: 6px; touch-action: none; cursor: crosshair; }
+#ruler text { font-family: inherit; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 4px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 700; }
+.legend i { width: 18px; height: 14px; border-radius: 4px; display: inline-block; }
+
+details { margin-top: 14px; }
+summary { font-weight: 700; cursor: pointer; font-size: 1rem; }
+details p, details li { font-size: 0.95rem; color: var(--text-2); }
+details code { font-size: 0.9rem; }
+footer { margin-top: 14px; }
+footer a { color: var(--accent); font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Thought Radius</h1>
+    <p class="tagline">How big can one mind be? Only as wide as a signal can travel during one of its thoughts.</p>
+  </header>
+
+  <div class="presets" id="presets"><span class="lbl">Try:</span></div>
+
+  <div class="grid">
+    <section class="card" aria-label="Controls">
+      <div class="control">
+        <h2><label for="tSlider">How long does one thought take?</label></h2>
+        <div class="readout" id="tOut"></div>
+        <input type="range" id="tSlider" min="0" max="1000" step="1">
+        <div class="quick" id="tQuick"></div>
+        <div class="speedbtns">
+          <button class="chip" id="faster" title="Divide thinking time by 1,000">Think 1,000× faster</button>
+          <button class="chip" id="slower" title="Multiply thinking time by 1,000">Think 1,000× slower</button>
+        </div>
+      </div>
+      <div class="control">
+        <h2><label for="dSlider">How far apart are its parts?</label></h2>
+        <div class="readout" id="dOut"></div>
+        <input type="range" id="dSlider" min="0" max="1000" step="1">
+        <div class="quick" id="dQuick"></div>
+      </div>
+      <div class="control">
+        <h2 id="mLabel">What carries the signals?</h2>
+        <div class="seg" id="medium" role="group" aria-labelledby="mLabel"></div>
+      </div>
+    </section>
+
+    <div class="rightcol">
+    <section class="card" aria-live="polite" aria-label="Result">
+      <p class="verdict-label">This is</p>
+      <p class="verdict"><span class="swatch" id="swatch"></span><span id="verdict"></span></p>
+      <p class="verdict-text" id="verdictText"></p>
+      <dl class="stats">
+        <div><dt>A signal crosses it in</dt><dd id="sCross"></dd></div>
+        <div><dt>Compared with one thought</dt><dd id="sRatio"></dd></div>
+        <div><dt>Thought radius at this speed</dt><dd id="sRadius"></dd></div>
+        <div><dt>One mind fits within</dt><dd id="sOne"></dd></div>
+      </dl>
+      <p class="scenario" id="scenario"></p>
+    </section>
+    <section class="card ruler-card" aria-label="Distance ruler">
+    <div class="ruler-head">
+      <h2>From a chip to the nearest star</h2>
+      <span class="small">Each tick is 10 times farther. Tap or drag to move the parts.</span>
+    </div>
+    <svg id="ruler" role="img" aria-label="Log-scale distance ruler showing the four zones and where this mind's parts sit"></svg>
+    <div class="legend" id="legend"></div>
+  </section>
+    </div>
+  </div>
+
+
+  <details>
+    <summary>How this works</summary>
+    <p>The <b>thought radius</b> is how far a signal travels during one thought: <code>radius = signal speed × thought time</code>. The calculator compares the distance between a mind's parts with that radius.</p>
+    <ul>
+      <li><b>One mind:</b> parts are within a tenth of the thought radius. A single thought needs many back-and-forth signals, so a tenth is a generous allowance.</li>
+      <li><b>A team:</b> from a tenth of the radius to 10 times the radius. The parts must specialize and coordinate.</li>
+      <li><b>A society:</b> from 10 to 10,000 times the radius. Separate minds exchanging messages.</li>
+      <li><b>A civilization:</b> beyond 10,000 times the radius. Separate minds that share history, not thoughts.</li>
+    </ul>
+    <p>The thresholds are judgment calls, chosen to make the pattern visible. The pattern does not depend on them: whatever lines you draw, faster thinking shrinks every zone, and nothing can make the signals faster than light.</p>
+    <p>Signal speeds: light in space 299,792 km per second; optical fiber about two-thirds of that; slower long-range nerve fibers about 10 meters per second (nerve speeds range from about 1 to 120 m/s). Mars uses its average distance from Earth; the real distance swings from about 55 to 400 million km.</p>
+  </details>
+
+  <footer class="small">
+    Companion to <a href="#" id="articleLink">There Will Never Be One Superintelligence</a> by Ed Daniels. Built in collaboration with Claude. No login, no tracking, nothing stored.
+  </footer>
+</div>
+
+<script>
+(() => {
+  // ---------- constants ----------
+  const C = 299792458; // m/s
+  const MEDIA = [
+    { id: "space", name: "Light in space", speed: C },
+    { id: "fiber", name: "Optical fiber", speed: C * 2 / 3 },
+    { id: "nerve", name: "Nerve fibers", speed: 10 },
+  ];
+  const T_MIN = -9, T_MAX = Math.log10(365.25 * 86400);          // 1 ns .. 1 year
+  const D_MIN = -2, D_MAX = 17;                                  // 1 cm .. ~10.6 light-years
+  const LY = 9.4607e15;
+
+  const ZONES = [
+    { key: "one", name: "One mind", hi: 0.1, color: "--z1",
+      text: "Every part can join every thought, with time to spare for the back-and-forth a thought needs." },
+    { key: "team", name: "A team", hi: 10, color: "--z2",
+      text: "Too wide to think as one. The parts must specialize, think partly on their own, and coordinate closely." },
+    { key: "society", name: "A society", hi: 1e4, color: "--z3",
+      text: "Separate minds. Each thinks for itself, and they trade messages and summaries." },
+    { key: "civ", name: "A civilization", hi: Infinity, color: "--z4",
+      text: "Separate minds that share history, not thoughts. Trust has to replace bandwidth." },
+  ];
+
+  const T_QUICK = [
+    ["Chip clock tick", 1e-9],
+    ["AI word", 0.02],
+    ["Human moment", 0.1],
+    ["Human decision", 600],
+    ["A day", 86400],
+    ["A year", 365.25 * 86400],
+  ];
+  const LANDMARKS = [
+    ["Chip", 0.025],
+    ["Brain", 0.15],
+    ["Data center", 500],
+    ["City", 3e4],
+    ["Across Earth", 2e7],
+    ["Moon", 3.844e8],
+    ["Mars", 2.25e11],
+    ["Voyager 1", 2.59e13],
+    ["Nearest star", 4.24 * LY],
+  ];
+  const PRESETS = [
+    { name: "A GPU chip", t: 1e-9, d: 0.025, m: "space",
+      note: "A modern chip is barely one mind at its own clock speed. Chip designers already fight this limit." },
+    { name: "Your brain", t: 0.1, d: 0.15, m: "nerve",
+      note: "Right at the edge. Slow nerve signals between the two halves may be one reason each half specializes." },
+    { name: "AI in one data center", t: 0.02, d: 500, m: "fiber",
+      note: "Comfortably one mind. This is why frontier AI lives in giant single buildings." },
+    { name: "One AI across Earth", t: 0.02, d: 2e7, m: "fiber",
+      note: "At chatbot speed, a planet is too wide for a single mind. Global AI has to be many minds." },
+    { name: "Earth and Moon AIs", t: 0.02, d: 3.844e8, m: "space",
+      note: "Close enough to converse, too far to share a thought." },
+    { name: "Mars at AI speed", t: 0.02, d: 2.25e11, m: "space",
+      note: "A Mars AI thinks tens of thousands of thoughts while one message crosses. It must act on its own." },
+    { name: "Mars at human speed", t: 600, d: 2.25e11, m: "space",
+      note: "Same distance, slower thinkers: Earth and Mars committees can still work as a team. Their AIs cannot. Speed shrinks minds." },
+    { name: "Voyager 1, daily decisions", t: 86400, d: 2.59e13, m: "space",
+      note: "On November 18, 2026, Voyager 1 is one light-day from Earth. Even a mind that thinks once a day is stretched there." },
+    { name: "Nearest star at AI speed", t: 0.02, d: 4.24 * LY, m: "space",
+      note: "Billions of thoughts per message. Minds this far apart are separate civilizations." },
+  ];
+
+  // ---------- state ----------
+  const state = { t: 0.02, d: 2e7, m: "fiber", preset: null };
+
+  // ---------- formatting ----------
+  const sig = (x, n = 3) => {
+    if (x >= 1000) return Number(x.toPrecision(n)).toLocaleString("en-US");
+    const p = Number(x.toPrecision(n));
+    return p.toLocaleString("en-US", { maximumFractionDigits: 6 });
+  };
+  function fmtTime(s) {
+    if (s < 1e-6) return sig(s * 1e9) + (s * 1e9 >= 1.5 ? " nanoseconds" : " nanosecond");
+    if (s < 1e-3) return sig(s * 1e6) + " microseconds";
+    if (s < 1) return sig(s * 1e3) + " milliseconds";
+    if (s < 60) return sig(s) + (s >= 1.5 ? " seconds" : " second");
+    if (s < 3600) return sig(s / 60) + (s / 60 >= 1.5 ? " minutes" : " minute");
+    if (s < 86400) return sig(s / 3600) + (s / 3600 >= 1.5 ? " hours" : " hour");
+    if (s < 365.25 * 86400 * 0.995) return sig(s / 86400) + (s / 86400 >= 1.5 ? " days" : " day");
+    const y = s / (365.25 * 86400);
+    if (y < 1e6) return sig(y) + (y >= 1.5 ? " years" : " year");
+    return sig(y / 1e6) + " million years";
+  }
+  function fmtDist(m) {
+    const mi = m / 1609.344;
+    const miles = (v) => v >= 1e9 ? sig(v / 1e9) + " billion mi" : v >= 1e6 ? sig(v / 1e6) + " million mi" : sig(v) + " mi";
+    if (m < 1) return { main: sig(m * 100) + " cm", sub: sig(m * 39.37) + " in" };
+    if (m < 1000) return { main: sig(m) + " m", sub: sig(m * 3.281) + " ft" };
+    if (m < 1e9) return { main: sig(m / 1000) + " km", sub: miles(mi) };
+    if (m < 1e12) return { main: sig(m / 1e9) + " million km", sub: miles(mi) };
+    if (m < 1e15) return { main: sig(m / 1e12) + " billion km", sub: miles(mi) };
+    return { main: sig(m / LY) + " light-years", sub: "" };
+  }
+  const distStr = (m) => { const f = fmtDist(m); return f.sub ? `${f.main} (${f.sub})` : f.main; };
+
+  // ---------- slider mapping (log) ----------
+  const toSlider = (v, lo, hi) => Math.round((Math.log10(v) - lo) / (hi - lo) * 1000);
+  const fromSlider = (s, lo, hi) => Math.pow(10, lo + (s / 1000) * (hi - lo));
+  const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
+
+  // ---------- DOM ----------
+  const $ = (id) => document.getElementById(id);
+  const tSlider = $("tSlider"), dSlider = $("dSlider");
+  const cssVar = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+  function chip(label, onClick, title) {
+    const b = document.createElement("button");
+    b.className = "chip"; b.type = "button"; b.textContent = label;
+    if (title) b.title = title;
+    b.setAttribute("aria-pressed", "false");
+    b.addEventListener("click", onClick);
+    return b;
+  }
+
+  const presetBtns = PRESETS.map((p, i) => {
+    const b = chip(p.name, () => { Object.assign(state, { t: p.t, d: p.d, m: p.m, preset: i }); render(); });
+    $("presets").appendChild(b); return b;
+  });
+  const tBtns = T_QUICK.map(([n, v]) => { const b = chip(n, () => set({ t: v })); $("tQuick").appendChild(b); return [b, v]; });
+  const dBtns = LANDMARKS.map(([n, v]) => { const b = chip(n, () => set({ d: v })); $("dQuick").appendChild(b); return [b, v]; });
+  const mBtns = MEDIA.map((m) => { const b = chip(m.name, () => set({ m: m.id })); $("medium").appendChild(b); return [b, m.id]; });
+
+  ZONES.forEach((z) => {
+    const s = document.createElement("span");
+    s.innerHTML = `<i style="background:var(${z.color})"></i>${z.name}`;
+    $("legend").appendChild(s);
+  });
+
+  function set(patch) { Object.assign(state, patch, { preset: null }); render(); }
+
+  tSlider.addEventListener("input", () => set({ t: fromSlider(+tSlider.value, T_MIN, T_MAX) }));
+  dSlider.addEventListener("input", () => set({ d: fromSlider(+dSlider.value, D_MIN, D_MAX) }));
+  $("faster").addEventListener("click", () => set({ t: clamp(state.t / 1000, 1e-9, Math.pow(10, T_MAX)) }));
+  $("slower").addEventListener("click", () => set({ t: clamp(state.t * 1000, 1e-9, Math.pow(10, T_MAX)) }));
+
+  const near = (a, b) => Math.abs(Math.log10(a) - Math.log10(b)) < 0.01;
+
+  // ---------- compute + render ----------
+  function compute() {
+    const speed = MEDIA.find((m) => m.id === state.m).speed;
+    const cross = state.d / speed;
+    const ratio = cross / state.t;
+    const radius = speed * state.t;
+    const zone = ZONES.find((z) => ratio <= z.hi);
+    return { speed, cross, ratio, radius, zone };
+  }
+
+  function ratioStr(r) {
+    if (r < 1) {
+      const pct = r * 100;
+      if (pct < 0.001) return "Less than a thousandth of a percent of a thought";
+      return `${sig(pct, 2)}% of one thought`;
+    }
+    if (r < 1.05) return "About one whole thought";
+    return `${sig(r, 3)} thoughts pass while it crosses`;
+  }
+
+  function render() {
+    const r = compute();
+    tSlider.value = toSlider(state.t, T_MIN, T_MAX);
+    dSlider.value = toSlider(state.d, D_MIN, D_MAX);
+    tSlider.setAttribute("aria-valuetext", fmtTime(state.t));
+    dSlider.setAttribute("aria-valuetext", distStr(state.d));
+
+    $("tOut").textContent = fmtTime(state.t);
+    const fd = fmtDist(state.d);
+    $("dOut").innerHTML = fd.main + (fd.sub ? ` <span class="sub">(${fd.sub})</span>` : "");
+
+    $("verdict").textContent = r.zone.name;
+    $("swatch").style.background = `var(${r.zone.color})`;
+    $("verdictText").textContent = r.zone.text;
+    $("sCross").textContent = fmtTime(r.cross);
+    $("sRatio").textContent = ratioStr(r.ratio);
+    $("sRadius").textContent = distStr(r.radius);
+    $("sOne").textContent = distStr(r.radius * 0.1);
+    $("scenario").textContent = state.preset !== null ? PRESETS[state.preset].note : "";
+
+    presetBtns.forEach((b, i) => b.setAttribute("aria-pressed", String(state.preset === i)));
+    tBtns.forEach(([b, v]) => b.setAttribute("aria-pressed", String(near(state.t, v))));
+    dBtns.forEach(([b, v]) => b.setAttribute("aria-pressed", String(near(state.d, v))));
+    mBtns.forEach(([b, id]) => b.setAttribute("aria-pressed", String(state.m === id)));
+
+    drawRuler(r);
+  }
+
+  // ---------- ruler ----------
+  const svg = $("ruler");
+  const NS = "http://www.w3.org/2000/svg";
+  let geom = null;
+  function el(name, attrs, parent) {
+    const e = document.createElementNS(NS, name);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    (parent || svg).appendChild(e); return e;
+  }
+
+  function drawRuler(r) {
+    const W = Math.max(300, svg.clientWidth || svg.parentNode.clientWidth - 36);
+    const narrow = W < 620;
+    const padL = 14, padR = 14;
+    const bandY = 46, bandH = 26;
+    const H = narrow ? 168 : 150;
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    svg.setAttribute("height", H);
+    svg.innerHTML = "";
+    const x = (m) => padL + (Math.log10(m) - D_MIN) / (D_MAX - D_MIN) * (W - padL - padR);
+    geom = { x, padL, padR, W };
+    const xmin = padL, xmax = W - padR;
+
+    // zones
+    const bounds = [Math.pow(10, D_MIN), r.radius * 0.1, r.radius * 10, r.radius * 1e4, Math.pow(10, D_MAX)];
+    ZONES.forEach((z, i) => {
+      const a = clamp(x(bounds[i]), xmin, xmax);
+      const b = clamp(x(bounds[i + 1]), xmin, xmax);
+      if (b - a <= 0.5) return;
+      const left = i === 0 || a <= xmin + 0.5, right = i === 3 || b >= xmax - 0.5;
+      el("rect", { x: a + (left ? 0 : 1), y: bandY, width: Math.max(0, b - a - (left ? 0 : 1) - (right ? 0 : 1)), height: bandH,
+        rx: 4, fill: `var(${z.color})` });
+      // zone label above band, only when the segment is wide enough
+      const label = z.name;
+      const need = label.length * 8.6 + 8;
+      if (b - a >= need) {
+        const t = el("text", { x: (a + b) / 2, y: bandY - 10, "text-anchor": "middle", "font-size": 15, "font-weight": 700, fill: cssVar("--text-2") });
+        t.textContent = label;
+      }
+    });
+
+    // decade ticks
+    for (let k = D_MIN; k <= D_MAX; k++) {
+      el("line", { x1: x(10 ** k), x2: x(10 ** k), y1: bandY + bandH + 2, y2: bandY + bandH + 6, stroke: cssVar("--muted"), "stroke-width": 1 });
+    }
+
+    // landmarks: alternate two rows
+    const tiny = W < 460;
+    const shown = tiny ? LANDMARKS.filter(([n]) => ["Brain", "Data center", "Across Earth", "Mars", "Nearest star"].includes(n)) : LANDMARKS;
+    shown.forEach(([n, v], i) => {
+      const lx = x(v);
+      const row = i % 2;
+      const ly = bandY + bandH + (narrow ? 26 : 22) + row * (narrow ? 22 : 20);
+      el("line", { x1: lx, x2: lx, y1: bandY + bandH, y2: ly - 13, stroke: cssVar("--muted"), "stroke-width": 1, "stroke-dasharray": "2 2" });
+      const anchor = lx < 50 ? "start" : lx > W - 60 ? "end" : "middle";
+      const t = el("text", { x: lx, y: ly, "text-anchor": anchor, "font-size": narrow ? 13 : 15, "font-weight": 700, fill: cssVar("--text-2") });
+      t.textContent = narrow && n === "Nearest star" ? "Star" : narrow && n === "Data center" ? "Data ctr" : tiny && n === "Across Earth" ? "Earth" : n;
+      const title = el("title", {}, t); title.textContent = `${n}: ${distStr(v)}`;
+    });
+
+    // pin for current distance
+    const px = clamp(x(state.d), xmin, xmax);
+    el("line", { x1: px, x2: px, y1: bandY - 4, y2: bandY + bandH + 4, stroke: cssVar("--pin"), "stroke-width": 3 });
+    el("circle", { cx: px, cy: bandY + bandH / 2, r: 8, fill: cssVar("--pin"), stroke: cssVar("--surface"), "stroke-width": 2 });
+    const lab = el("text", { x: px, y: bandY - 10, "text-anchor": px < 80 ? "start" : px > W - 80 ? "end" : "middle", "font-size": 15, "font-weight": 700, fill: cssVar("--pin") });
+    lab.textContent = "Its parts";
+    // hide a zone label that collides with the pin label
+    svg.querySelectorAll("text").forEach((t) => {
+      if (t === lab || +t.getAttribute("y") !== bandY - 10) return;
+      if (Math.abs(+t.getAttribute("x") - px) < 90) t.remove();
+    });
+  }
+
+  // drag / tap on ruler sets distance
+  function pointerToDist(ev) {
+    if (!geom) return;
+    const rect = svg.getBoundingClientRect();
+    const sx = (ev.clientX - rect.left) * (geom.W / rect.width);
+    const f = clamp((sx - geom.padL) / (geom.W - geom.padL - geom.padR), 0, 1);
+    set({ d: Math.pow(10, D_MIN + f * (D_MAX - D_MIN)) });
+  }
+  let dragging = false;
+  svg.addEventListener("pointerdown", (e) => { dragging = true; svg.setPointerCapture(e.pointerId); pointerToDist(e); });
+  svg.addEventListener("pointermove", (e) => { if (dragging) pointerToDist(e); });
+  svg.addEventListener("pointerup", () => { dragging = false; });
+  svg.addEventListener("pointercancel", () => { dragging = false; });
+
+  window.addEventListener("resize", () => render());
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => render());
+
+  // default: open on the "One AI across Earth" scenario
+  Object.assign(state, { t: PRESETS[3].t, d: PRESETS[3].d, m: PRESETS[3].m, preset: 3 });
+  render();
+})();
+</script>
+</body>
+</html>
