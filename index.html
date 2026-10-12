@@ -186,6 +186,7 @@ footer a { color: var(--accent); font-weight: 700; }
 
   <details>
     <summary>How this works</summary>
+    <p>A <b>thought</b> here is one complete cycle in which a mind pulls in information from all of its parts, combines it, and settles on a result that becomes the starting point for the next cycle: one chip cycle, one pass through an AI model, a moment of human perception, a considered decision. Richer thoughts are built from many such cycles, and each one still needs every part to check in on time.</p>
     <p>The <b>thought radius</b> is how far a signal travels during one thought: <code>radius = signal speed × thought time</code>. The calculator compares the distance between a mind's parts with that radius.</p>
     <ul>
       <li><b>One mind:</b> parts are within a tenth of the thought radius. A single thought needs many back-and-forth signals, so a tenth is a generous allowance.</li>
@@ -227,12 +228,12 @@ footer a { color: var(--accent); font-weight: 700; }
   ];
 
   const T_QUICK = [
-    ["Chip clock tick", 1e-9],
-    ["AI word", 0.02],
+    ["Chip cycle", 1e-9],
+    ["AI model pass", 0.02],
     ["Human moment", 0.1],
     ["Human decision", 600],
-    ["A day", 86400],
-    ["A year", 365.25 * 86400],
+    ["Daily decision", 86400],
+    ["Yearly decision", 365.25 * 86400],
   ];
   const LANDMARKS = [
     ["Chip", 0.025],
@@ -247,13 +248,13 @@ footer a { color: var(--accent); font-weight: 700; }
   ];
   const PRESETS = [
     { name: "A GPU chip", t: 1e-9, d: 0.025, m: "space",
-      note: "A modern chip is barely one mind at its own clock speed. Chip designers already fight this limit." },
+      note: "A modern chip is barely one mind at its own cycle speed: every part must check in before the next cycle begins. Chip designers already fight this limit." },
     { name: "Your brain", t: 0.1, d: 0.15, m: "nerve",
       note: "Right at the edge. Slow nerve signals between the two halves may be one reason each half specializes." },
     { name: "AI in one data center", t: 0.02, d: 500, m: "fiber",
       note: "Comfortably one mind. This is why frontier AI lives in giant single buildings." },
     { name: "One AI across Earth", t: 0.02, d: 2e7, m: "fiber",
-      note: "At chatbot speed, a planet is too wide for a single mind. Global AI has to be many minds." },
+      note: "At the speed of one pass through an AI model, a planet is too wide for a single mind. Global AI has to be many minds." },
     { name: "Earth and Moon AIs", t: 0.02, d: 3.844e8, m: "space",
       note: "Close enough to converse, too far to share a thought." },
     { name: "Mars at AI speed", t: 0.02, d: 2.25e11, m: "space",
